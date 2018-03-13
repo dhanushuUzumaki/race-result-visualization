@@ -16,13 +16,9 @@ body {
 }
 
 .item {
-  fill: var(--secondary);
   cursor: pointer;
 }
 
-.item:hover {
-  fill: var(--secondaryLight);
-}
 
 .axis path {
   stroke: var(--whitishBg);
@@ -35,13 +31,6 @@ body {
 .axis text {
   font-size: 1em;
   stroke: var(--whitishBg);
-}
-
-.description {
-  text-align: center;
-  padding: 0px 10px;
-  font-size: 0.8em;
-  margin-top: -5%;
 }
 
 .details {
@@ -60,7 +49,7 @@ body {
   background: var(--whitishBg);
   color: var(--primaryDark);  
   position: fixed;
-  top: 50%;
+  top: 10%;
   right: 10px;
   opacity: 0.8;
   visibility: visible;
@@ -74,4 +63,10 @@ body {
 .tooltip.hidden {
   opacity: 0;
   visibility: hidden;
+}
+
+.line {
+  fill: none;
+  stroke: white;
+  stroke-width: 2px;
 }

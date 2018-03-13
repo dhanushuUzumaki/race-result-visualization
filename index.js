@@ -1,42 +1,68 @@
-const apiUrl = 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json';
-const description = document.getElementsByClassName('description')[0];
+const apiUrl = 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json';
 const tooltip = document.getElementsByClassName('tooltip')[0];
 
 const plot = (data) => {
 
-  // calculate widht and height of svg and width of each item
   const margin = { top: 20, right: 20, bottom: 10, left: 100 };
   const width = Math.max((((window.innerWidth / 100) * 80) - margin.right - margin.left), 500);
   const height = ((window.innerHeight / 100) * 80) - margin.bottom - margin.top;
-  const itemWidth = Math.floor(width / data.length);
 
-  // transform data
+  const parseTime = d3.timeParse('%M:%S');
+
+  const minTime = d3.min(data, d => d.Seconds);
   const transformedData = data.map(d => {
-    return {
-      date: new Date(d[0]),
-      value: d[1]
-    };
-  });
+    d.behindBy = d.Seconds - minTime;
+    d.formattedTime = parseTime(d.Time);
+    return d;
+  })
 
+  console.log(transformedData);
+
+  const x = d3.scaleTime().range([0, width]);
+  const y = d3.scaleLinear().range([height, 0]);
+
+  const valueLine = d3.line()
+    .x(d => x(d.behindBy))
+    .y(d => y(d.Place));
   const svg = d3.select('svg')
-    .attr('width', width + margin.left + margin.right + 500)
+    .attr('width', width + margin.left + margin.right + 100)
     .attr('height', height + margin.top + margin.bottom + 100)
     .append('g')
     .attr('transform',
       `translate(${margin.left}, ${margin.top})`);
 
-  // scale functions      
-  const x = d3.scaleTime().range([0, width]).domain(d3.extent(transformedData, d => d.date));
-  const y = d3.scaleLinear().range([height, 0]).domain([0, d3.max(transformedData, d => d.value)]);
+  x.domain(d3.extent(data, d => d.behindBy).reverse());
+  y.domain([d3.max(data, d => d.Place), 0]);
 
-  // draw the axes
+  svg.append('path')
+    .data([data])
+    .attr('class', 'line')
+    .attr('d', valueLine);
 
-  // x axis and label
+  svg.selectAll('dot')
+    .data(data)
+    .enter()
+    .append('circle')
+    .attr('r', 5)
+    .attr('cx', d => x(d.behindBy))
+    .attr('cy', d => y(d.Place))
+    .attr('class', 'item')
+    .attr('fill', d => {
+      return d.Doping === '' ? 'green' : '#ffcc54';
+    })
+    .on('mouseover', d => {
+      tooltip.classList.remove('hidden');
+      tooltip.innerHTML = `${d.Name}<br />Time: ${d.Time}<br />Nationality: ${d.Nationality}<br />Doping: ${d.Doping === '' ? 'No Doping allegations' : d.Doping}`;
+    })
+    .on('mouseout', d => {
+      tooltip.classList.add('hidden');
+    })
+
   svg.append('g')
+    .attr('class', 'axis')
     .attr('transform',
       `translate(0, ${height})`)
-    .attr('class', 'axis')
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x).tickFormat(d3.format('.2f')));
 
   svg.append("text")
     .attr("transform",
@@ -44,9 +70,8 @@ const plot = (data) => {
       (height + margin.top + 20) + ")")
     .style("text-anchor", "middle")
     .attr('class', 'label')
-    .text("Year");
+    .text("Behind By (Units in seconds)");
 
-  // y axis and label  
   svg.append('g')
     .attr('class', 'axis')
     .call(d3.axisLeft(y));
@@ -58,42 +83,64 @@ const plot = (data) => {
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
-    .text("GDP USA");
+    .text("Place");
 
-  // plot the data  
-  svg.selectAll('.item')
-    .data(transformedData)
-    .enter()
-    .append('rect')
-    .attr('x', d => x(d.date))
-    .attr('y', d => y(d.value))
-    .attr('height', d => height - y(d.value))
-    .attr('width', itemWidth)
-    .attr('class', 'item')
-    .on("mouseover", (d) => {
-      tooltip.textContent = `$${d.value} ${d.date.toDateString()}`;
-      tooltip.classList.remove('hidden');
+  svg.append("circle")
+    .attr("cx", function (d) {
+      return x(10);
     })
-    .on("mouseout", () => {
-      tooltip.classList.add('hidden');
-    });
+    .attr("cy", function (d) {
+      return y(20);
+    })
+    .attr("r", 5)
+    .attr("fill", "green");
+
+  svg.append("text")
+    .attr("x", function (d) {
+      return x(7);
+    })
+    .attr("y", function (d) {
+      return y(20) + 4;
+    })
+    .attr("class", "legend")
+    .text("No doping allegations");
+
+  svg.append("circle")
+    .attr("cx", function (d) {
+      return x(10);
+    })
+    .attr("cy", function (d) {
+      return y(23);
+    })
+    .attr("r", 5)
+    .attr("fill", "#ffcc54");
+
+  svg.append("text")
+    .attr("x", function (d) {
+      return x(7);
+    })
+    .attr("y", function (d) {
+      return y(23) + 4;
+    })
+    .attr("class", "legend")
+    .text("Riders with doping allegations");
+
 }
 
-const getGDPData = () => {
+const fetchData = () => {
   return fetch(apiUrl)
     .then(response => {
       return response.json();
     });
 };
 
-const fetchData = async () => {
+const fetchAndPlot = async () => {
   try {
-    const response = await getGDPData();
-    description.textContent = response.description;
-    plot(response.data);
+    const response = await fetchData();
+    plot(response);
   } catch (e) {
     console.error(e);
   }
 }
 
-fetchData();
+fetchAndPlot();
