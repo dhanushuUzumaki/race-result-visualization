@@ -1,0 +1,56 @@
+:root {
+  --whitishBg: #eee;
+  --primary: #2f3536;
+  --secondary: #ffcc54;
+  --primaryLight: #585f60;
+  --primaryDark: #060f10;
+  --secondaryLight: #ffff85;
+  --secondaryDark: #c89b20;
+  --primaryText: #ffffff;
+  --secondaryText: #000000;
+}
+
+body {
+  background: var(--primary);
+  color: var(--whitishBg);
+}
+
+.item {
+  fill: var(--secondary);
+  cursor: pointer;
+}
+
+.item:hover {
+  fill: var(--secondaryLight);
+}
+
+.axis path {
+  stroke: var(--whitishBg);
+}
+
+.axis line {
+  stroke: var(--whitishBg);
+}
+
+.axis text {
+  font-size: 1em;
+  stroke: var(--whitishBg);
+}
+
+.description {
+  text-align: center;
+  padding: 0px 10px;
+  font-size: 0.8em;
+  margin-top: -5%;
+}
+
+.details {
+  text-align: center;
+  padding: 10px;
+  font-size: 1.2em;
+}
+
+.label {
+  stroke: none;
+  fill: var(--whitishBg);
+}
