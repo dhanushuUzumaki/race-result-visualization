@@ -1,0 +1,27 @@
+{
+  "name": "race-result-visualization",
+  "version": "1.0.0",
+  "description": "Professional Bicycle Race result visualization using D3.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "browser-sync start --server --files '*.css' '*.js' '*.html'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhanushuUzumaki/race-result-visualization.git"
+  },
+  "keywords": [
+    "D3",
+    "freecodecamp"
+  ],
+  "author": "Dhanushu Uzumaki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dhanushuUzumaki/race-result-visualization/issues"
+  },
+  "homepage": "https://github.com/dhanushuUzumaki/race-result-visualization#readme",
+  "devDependencies": {
+    "browser-sync": "^2.23.6"
+  }
+}
