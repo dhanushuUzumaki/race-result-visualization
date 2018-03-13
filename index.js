@@ -1,9 +1,6 @@
 const apiUrl = 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json';
 const description = document.getElementsByClassName('description')[0];
-const details = document.getElementsByClassName('details')[0];
-const placeHolderText = 'USA Gross Domestic Product Data';
-
-details.textContent = placeHolderText;
+const tooltip = document.getElementsByClassName('tooltip')[0];
 
 const plot = (data) => {
 
@@ -74,10 +71,11 @@ const plot = (data) => {
     .attr('width', itemWidth)
     .attr('class', 'item')
     .on("mouseover", (d) => {
-      details.textContent = `$${d.value} ${d.date.toDateString()}`;
+      tooltip.textContent = `$${d.value} ${d.date.toDateString()}`;
+      tooltip.classList.remove('hidden');
     })
     .on("mouseout", () => {
-      details.textContent = placeHolderText;
+      tooltip.classList.add('hidden');
     });
 }
 

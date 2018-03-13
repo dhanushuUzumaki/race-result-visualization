@@ -54,3 +54,24 @@ body {
   stroke: none;
   fill: var(--whitishBg);
 }
+
+.tooltip {
+  border-radius: 5px;
+  background: var(--whitishBg);
+  color: var(--primaryDark);  
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  opacity: 0.8;
+  visibility: visible;
+  text-align: center;
+  padding: 10px;
+  max-width: 15%;
+  overflow-wrap: break-word;
+  transition: opacity 0.2s ease-in 0.2s;
+}
+
+.tooltip.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
